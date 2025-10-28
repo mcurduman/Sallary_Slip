@@ -1,0 +1,10 @@
+flask
+flask-cors
+pyvenv
+sqlalchemy
+flask-mail
+python-dotenv
+Flask-JWT-Extended
+pydantic
+pydantic[email]
+pydantic-settings

@@ -1,0 +1,19 @@
+services:
+  frontend:
+    build: ./payslip-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./payslip-frontend:/app
+      - /app/node_modules
+    restart: always
+
+  api:
+    build: ./payslip-backend
+    ports:
+      - "5050:5050"
+    volumes:
+      - ./payslip-backend:/app
+    restart: always
+    env_file:
+      - .env
