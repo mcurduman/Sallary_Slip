@@ -2,8 +2,8 @@ from flask_mail import Message
 from flask import current_app
 from app.utils import mail
 
-class Email_Service:
-    def send_bulk_with_attachments(users,files):
+class EmailService:
+    def send_bulk_with_attachments(self, users,files):
         with mail.connect() as conn:
             for user in users:
                 msg = Message(

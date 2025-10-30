@@ -8,3 +8,11 @@ Flask-JWT-Extended
 pydantic
 pydantic[email]
 pydantic-settings
+structlog
+alembic
+psycopg2-binary
+asyncpg
+databases[asyncpg]
+httpx[http2]
+python-stdnum
+flask-openapi3[swagger]

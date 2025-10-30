@@ -1,9 +1,22 @@
-# | PayrollID | INT | Primary Key | Unique ID for this specific payslip/pay run. |
-# | EmployeeID | INT | Foreign Key | The employee who received the pay. |
-# | PayPeriodStart | DATE | NOT NULL | Start date of the pay cycle e.g., first of the month. |
-# | PayPeriodEnd | DATE | NOT NULL | End date of the pay cycle e.g., last of the month. |
-# | GrossPay | DECIMAL10, 2 | NOT NULL | Total earnings before any deductions. |
-# | TotalDeductions | DECIMAL10, 2 | NOT NULL | Total amount deducted taxes, funds, etc.. |
-# | NetPay | DECIMAL10, 2 | NOT NULL | The final take-home amount Gross – Deductions. |
-# | RunDate | DATETIME | NOT NULL | When the payroll was actually processed. |
-# | ProcessedByUserID | INT | Foreign Key | Links to tbl_User for audit trail. |
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import String, Integer, ForeignKey, Numeric, Date
+import uuid
+from typing import Optional
+from app.db.base import Base
+from datetime import date
+
+class PayrollRecord(Base):
+    __tablename__ = "payroll_record"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    employee_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("employee.id"), nullable=False)
+    year: Mapped[int] = mapped_column(Integer, nullable=False)
+    month: Mapped[int] = mapped_column(Integer, nullable=False)
+    gross_pay: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
+    net_pay: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
+    total_deductions: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
+    run_date: Mapped[Optional[date]] = mapped_column(Date)
+
+    employee = relationship("Employee", back_populates="payroll_records")
+
+    

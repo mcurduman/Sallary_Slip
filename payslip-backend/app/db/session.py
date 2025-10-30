@@ -4,7 +4,7 @@ from app.core.config import get_settings
 
 cfg = get_settings()
 engine = create_async_engine(
-    cfg.DATABASE_URL,               # sqlite+aiosqlite (dev) sau postgresql+asyncpg (prod)
+    str(cfg.database.DB_URL),       
     future=True,
     pool_pre_ping=True,
     echo=(cfg.LOG_LEVEL=="DEBUG"),

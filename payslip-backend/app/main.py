@@ -1,33 +1,22 @@
 from flask import Flask
 from flask_cors import CORS
 from dotenv import load_dotenv
-from flask_mail import Mail, Message
 from flask_jwt_extended import JWTManager, get_jwt
 from flask_jwt_extended.view_decorators import verify_jwt_in_request
-import os
+from app.api.error_handler import register_error_handlers
+from app.api.routes_handler import register_routes
+from app.utils.email import mail
+from app.core.config import get_settings
+load_dotenv()
 
-mail = Mail()
+app = Flask(__name__, instance_relative_config=True)
+app.config.update(get_settings().model_dump())
 
-app = Flask(__name__)
-app.config["MAIL_SERVER"] = os.getenv("MAIL_SERVER")
-app.config["MAIL_PORT"] = os.getenv("MAIL_PORT")
-app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
-app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
-app.config["MAIL_DEFAULT_SENDER"] = os.getenv("MAIL_DEFAULT_SENDER")
-app.config["MAIL_USE_TLS"] = os.getenv("MAIL_USE_TLS")
-app.config["MAIL_USE_SSL"] = os.getenv("MAIL_USE_SSL")
-app.config["MAIL_ASCII_ATTACHMENTS"] = os.getenv("MAIL_ASCII_ATTACHMENTS")
+register_error_handlers(app)
+register_routes(app)
+
 CORS(app)
-
 mail.init_app(app)
-
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
-app.config["JWT_TOKEN_LOCATION"] = os.getenv("JWT_TOKEN_LOCATION").split(",")
-app.config["JWT_COOKIE_CSRF_PROTECT"] = False
-app.config["JWT_COOKIE_SECURE"] = os.getenv("JWT_COOKIE_SECURE")
-app.config["JWT_COOKIE_SAMESITE"] = os.getenv("JWT_COOKIE_SAMESITE")
-app.config["JWT_ACCESS_COOKIE_PATH"] = os.getenv("JWT_ACCESS_COOKIE_PATH")
-app.config["JWT_REFRESH_COOKIE_PATH"] = os.getenv("JWT_REFRESH_COOKIE_PATH")
 
 JWTManager(app)
 @app.context_processor
