@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Integer, ForeignKey, String
 import uuid
 from typing import Optional
-from app.utils.enums import TimecardStatus
+from app.utils.enums.timecard_status_enum import TimecardStatus
 from app.db.base import Base
 
 class MonthlyTimecard(Base):

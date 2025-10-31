@@ -48,6 +48,8 @@ class DisciplineRepository:
 
 	async def update(self, entity: Discipline) -> Discipline:
 		try:
+			if not entity:
+				raise errors.ResourceNotFoundException(self._discipline_not_found_msg)
 			await self._session.merge(entity)
 			await self._session.commit()
 			await self._session.refresh(entity)

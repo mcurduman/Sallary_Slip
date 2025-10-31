@@ -16,7 +16,6 @@ class Employee(Base):
     middle_name: Mapped[Optional[str]] = mapped_column(String)
     last_name: Mapped[str] = mapped_column(String, nullable=False)
     email: Mapped[str] = mapped_column(String, unique=True, nullable=False)
-    user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("user.id"), nullable=False)
     position_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("position.id"), nullable=False)
     manager_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("employee.id"))
     discipline_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("discipline.id"))
@@ -25,7 +24,7 @@ class Employee(Base):
     termination_status: Mapped[Optional[EmploymentStatus]] = mapped_column(String, default=None)
     termination_date: Mapped[Optional[date]] = mapped_column(Date)
 
-    user = relationship("User", back_populates="employee")
+    user = relationship("User", back_populates="employee",cascade="all, delete-orphan", uselist=False)
     position = relationship("Position", back_populates="employees")
     discipline = relationship("Discipline", back_populates="employees")
     manager = relationship("Employee", remote_side=[id], back_populates="direct_reports")

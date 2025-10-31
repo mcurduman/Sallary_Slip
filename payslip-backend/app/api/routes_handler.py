@@ -1,4 +1,4 @@
-from app.api.routers.auth import auth
+from app.api.routers.auth import router as auth_router
 
 def register_routes(app):
-    app.register_blueprint(auth, url_prefix="/api/auth")
+    app.include_router(auth_router)

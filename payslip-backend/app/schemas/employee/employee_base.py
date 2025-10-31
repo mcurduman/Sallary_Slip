@@ -12,7 +12,6 @@ class EmployeeBase(BaseModel):
 	middle_name: Optional[str] = Field(None, alias="middleName")
 	last_name: str = Field(..., alias="lastName")
 	email: EmailStr = Field(..., alias="email")
-	user_id: str = Field(..., alias="userId")
 	position_id: str = Field(..., alias="positionId")
 	manager_id: Optional[str] = Field(None, alias="managerId")
 	discipline_id: Optional[str] = Field(None, alias="disciplineId")

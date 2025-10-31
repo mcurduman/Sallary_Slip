@@ -1,67 +1,45 @@
-from datetime import timedelta
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import (
-    create_access_token,
-    create_refresh_token,
-    jwt_required,
-    get_jwt_identity,
-    set_access_cookies,
-    set_refresh_cookies,
-    unset_jwt_cookies,
-)
-## Removed unused UserResponse import
+from fastapi import APIRouter, Depends, status
+from fastapi.responses import JSONResponse
+from fastapi_jwt import JwtAuthorizationCredentials, JwtAccessBearer
 from app.schemas.user.user_create import UserCreate
 from app.schemas.user.user_login import UserLogin
+from app.schemas.user.user_response import UserResponse
 from app.api.deps import get_user_service
 
-auth = Blueprint("api/auth", __name__)
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 
-@auth.route('/register', methods=['POST'])
-def register():
-    user = UserCreate(**request.get_json())
-    created_user = get_user_service().create_user(user)
-    return jsonify(created_user), 201
+@router.post('/register', response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def register(user: UserCreate, user_service=Depends(get_user_service)):
+    created_user = await user_service.create_user(user)
+    return created_user
 
-@auth.route('/login', methods=['POST'])
-def login():
-    user = UserLogin(**request.get_json())
-    authenticated_user = get_user_service().authenticate_user(user)
+jwt = JwtAccessBearer(secret_key="your-secret-key")
+
+@router.post('/login')
+async def login(user: UserLogin, user_service=Depends(get_user_service)):
+    authenticated_user = await user_service.authenticate_user(user)
     if authenticated_user:
-        access_token = create_access_token(
-            identity=str(authenticated_user.id),
-            additional_claims={"role": authenticated_user.role,
-                              "email": authenticated_user.email},
-            expires_delta=timedelta(minutes=15)
-        )
-        refresh_token = create_refresh_token(
-            identity=str(authenticated_user.id),
-            expires_delta=timedelta(days=30)
-        )
-        response = jsonify({"login": True})
-        set_access_cookies(response, access_token)
-        set_refresh_cookies(response, refresh_token)
-        return response, 200
-    return jsonify({"msg": "Bad username or password"}), 401
+        access_token = jwt.encode({
+            "sub": str(authenticated_user.id),
+            "role": authenticated_user.role,
+            "email": authenticated_user.email
+        })
+        return JSONResponse(content={"access_token": access_token})
+    return JSONResponse(content={"msg": "Bad username or password"}, status_code=401)
 
-@auth.route('/refresh', methods=['POST'])
-@jwt_required(refresh=True)
-def refresh():
-    identity = get_jwt_identity()
-    access_token = create_access_token(identity=identity)
-    response = jsonify(access_token=access_token)
-    set_access_cookies(response, access_token)
-    return response, 200
+@router.post('/refresh')
+async def refresh(credentials: JwtAuthorizationCredentials = Depends(jwt)):
+    identity = credentials.subject
+    access_token = jwt.encode({"sub": identity})
+    return JSONResponse(content={"access_token": access_token})
 
-@auth.route('/logout', methods=['POST'])
-@jwt_required()
-def logout():
-    response = jsonify({"msg": "logout successful"})
-    unset_jwt_cookies(response)
-    return response, 200
+@router.post('/logout')
+async def logout():
+    # JWT is stateless, so logout is handled client-side (delete token)
+    return JSONResponse(content={"msg": "logout successful"})
 
-@auth.route('/me', methods=['GET'])
-@jwt_required()
-def me():
-    identity = get_jwt_identity()
-    user = get_user_service().get_user_by_id(identity['id'])
-    return jsonify(user)
+@router.get('/me', response_model=UserResponse)
+async def me(credentials: JwtAuthorizationCredentials = Depends(jwt), user_service=Depends(get_user_service)):
+    identity = credentials.subject
+    user = await user_service.get_user_by_id(identity)
+    return user
