@@ -15,3 +15,7 @@ databases[asyncpg]
 httpx[http2]
 python-stdnum
 fastapi-jwt
+mailtrap
+pypdf
+reportlab
+reportlab[pycairo]

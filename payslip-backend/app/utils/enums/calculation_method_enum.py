@@ -1,7 +1,7 @@
 import enum
 
 class CalculationMethod(enum.Enum):
-    fixed = "fixed"
-    percentage = "percentage"
-    per_day = "per_day"
-    per_meal = "per_meal"
+    FIXED = "fixed"
+    PERCENTAGE = "percentage"
+    PER_DAY = "per_day"
+    PER_MEAL = "per_meal"

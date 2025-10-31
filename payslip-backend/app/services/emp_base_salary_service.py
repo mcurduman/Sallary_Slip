@@ -2,7 +2,6 @@ from app.db.models.emp_base_salary import EmployeeBaseSalary
 from app.repositories.emp_base_salary_repository import EmployeeBaseSalaryRepository
 from typing import Optional, Iterable
 import uuid
-import app.utils.errors as errors
 from app.utils.errors import ResourceNotFoundException, DatabaseException, BaseAppException
 class EmpBaseSalaryService:
     def __init__(self, emp_base_salary_repository: EmployeeBaseSalaryRepository):
@@ -17,7 +16,7 @@ class EmpBaseSalaryService:
             raise BaseAppException(f"Failed to create employee base salary: {str(e)}")
         
     async def get_emp_base_salary_by_id(self, emp_base_salary_id: uuid.UUID
-        ) -> EmployeeBaseSalary:
+        ) -> Optional[EmployeeBaseSalary]:
         try:
             return await self.emp_base_salary_repository.get(emp_base_salary_id)
         except ResourceNotFoundException as e:

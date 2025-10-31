@@ -27,13 +27,6 @@ class EmployeeRepository(BaseRepository[Employee, uuid.UUID]):
         except Exception as e:
             raise errors.DatabaseException(f"Failed to retrieve employee: {str(e)}")
 
-    async def get_by_manager_id(self, manager_id: uuid.UUID) -> Iterable[Employee]:
-        try:
-            employees = await self._session.execute(select(Employee).where(Employee.manager_id == manager_id))
-            return employees.scalars().all()
-        except Exception as e:
-            raise errors.DatabaseException(f"Failed to retrieve employees by manager ID: {str(e)}")
-
     async def get_managers(self) -> Iterable[Employee]:
         try:
             result = await self._session.execute(

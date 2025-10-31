@@ -1,7 +1,7 @@
 from enum import Enum
 
 class DeductionType(Enum):
-    tax = "tax"
-    health = "health"
-    pension = "pension"
-    other = "other"
+    TAX = "tax"
+    HEALTH = "health"
+    PENSION = "pension"
+    OTHER = "other"

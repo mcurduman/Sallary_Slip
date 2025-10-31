@@ -9,3 +9,4 @@ class MailSettings(BaseSettings):
     DEFAULT_SENDER: EmailStr
     USE_TLS: bool = True
     USE_SSL: bool = False
+    TEMPLATE_UUID: str

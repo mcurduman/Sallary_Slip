@@ -14,12 +14,12 @@ class EmployeeBenefitBase(BaseModel):
     amount: Optional[float] = Field(None, alias="amount")
     percentage: Optional[float] = Field(None, alias="percentage")
     calculation_method: CalculationMethod = Field(
-        CalculationMethod.fixed,
+    CalculationMethod.FIXED,
         alias="calculationMethod"
     )
     taxable: bool = Field(True, alias="taxable")
     periodicity: Periodicity = Field(
-        Periodicity.monthly,
+    Periodicity.MONTHLY,
         alias="periodicity"
     )
     effective_start_date: Optional[date] = Field(None, alias="effectiveStartDate")
@@ -37,10 +37,10 @@ class EmployeeBenefitBase(BaseModel):
     
     @model_validator(mode="after")
     def validate_calculation_method(self):
-        if self.calculation_method == CalculationMethod.percentage and self.percentage is None:
-            raise ValueError("Percentage must be provided when calculation method is 'percentage'")
-        if self.calculation_method == CalculationMethod.fixed and self.amount is None:
-            raise ValueError("Amount must be provided when calculation method is 'fixed'")
+        if self.calculation_method == CalculationMethod.PERCENTAGE and self.percentage is None:
+                raise ValueError("Percentage must be provided when calculation method is 'percentage'")
+        if self.calculation_method == CalculationMethod.FIXED and self.amount is None:
+                raise ValueError("Amount must be provided when calculation method is 'fixed'")
         return self
     
     @model_validator(mode="after")
