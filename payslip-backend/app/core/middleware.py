@@ -1,18 +1,22 @@
+
+from fastapi import Request
+import time
 import uuid
-from flask import request, g, after_this_request
-from structlog.contextvars import bind_contextvars, clear_contextvars
+from app.core.logging import get_logger
 
-REQUEST_ID_HEADER = "x-request-id"
-
-def request_id_middleware(app):
-    @app.before_request
-    def set_request_id():
-        rid = request.headers.get(REQUEST_ID_HEADER, str(uuid.uuid4()))
-        g.request_id = rid
-        bind_contextvars(request_id=rid, path=request.path, method=request.method)
-
-        @after_this_request
-        def add_request_id_header(response):
-            response.headers[REQUEST_ID_HEADER] = g.request_id
-            clear_contextvars()
-            return response
+async def log_requests(request: Request, call_next):
+    logger = get_logger("middleware")
+    request_id = request.headers.get("x-request-id", str(uuid.uuid4()))
+    logger.info(f"Request ID: {request_id} - {request.method} {request.url}")
+    start_time = time.perf_counter()
+    response = None
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        logger.error(f"Request ID: {request_id} - Error: {str(e)}")
+        raise e
+    finally:
+        process_time = (time.perf_counter() - start_time) * 1000
+        status_code = getattr(response, "status_code", "N/A") if response is not None else "N/A"
+        logger.info(f"Request ID: {request_id} - Completed in {process_time:.2f}ms with status {status_code}")

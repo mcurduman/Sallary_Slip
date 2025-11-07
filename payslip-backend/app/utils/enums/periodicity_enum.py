@@ -1,6 +1,6 @@
 import enum
 
-class Periodicity(enum.Enum):
-    MONTHLY = "monthly"
-    DAILY = "daily"
-    ONCE = "once"
+class Periodicity(str, enum.Enum):
+    MONTHLY = "MONTHLY"
+    DAILY = "DAILY"
+    ONCE = "ONCE"

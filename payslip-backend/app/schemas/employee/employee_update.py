@@ -5,15 +5,7 @@ from datetime import date
 import uuid
 
 class EmployeeUpdate(BaseModel):
-    last_name: str = Field(..., alias="lastName")
-    first_name: str = Field(..., alias="firstName")
-    middle_name: Optional[str] = Field(None, alias="middleName")
-    discipline_id: str = Field(..., alias="disciplineId")
     termination_date: Optional[date] = Field(None, alias="terminationDate")
-    termination_status: Optional[EmploymentStatus] = Field(None, alias="terminationStatus")
-    manager_id: Optional[uuid.UUID] = Field(None, alias="managerId")
-    employment_status: Optional[EmploymentStatus] = Field(None, alias="employmentStatus")
-    position_id: str = Field(..., alias="positionId")
 
     @method_validator(mode="after")
     def validate_termination_fields(self):
@@ -22,4 +14,12 @@ class EmployeeUpdate(BaseModel):
         elif self.employment_status != EmploymentStatus.terminated and self.termination_date is not None:
             raise ValueError("Termination date must be null when employment status is not 'terminated'")
         return self
+    last_name: str = Field(..., alias="lastName")
+    first_name: str = Field(..., alias="firstName")
+    middle_name: Optional[str] = Field(None, alias="middleName")
+    discipline_id: str = Field(..., alias="disciplineId")
+    manager_id: Optional[uuid.UUID] = Field(None, alias="managerId")
+    employment_status: Optional[EmploymentStatus] = Field(None, alias="employmentStatus")
+    position_id: str = Field(..., alias="positionId")
+
 

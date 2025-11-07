@@ -1,8 +1,8 @@
 from enum import Enum
 
-class BenefitType(Enum):
-    MEAL = "meal"
-    TRANSPORT = "transport"
-    HEALTH = "health"
-    BONUS = "bonus"
-    OTHER = "other"
+class BenefitType(str, Enum):
+    MEAL = "MEAL"
+    TRANSPORT = "TRANSPORT"
+    HEALTH = "HEALTH"
+    BONUS = "BONUS"
+    OTHER = "OTHER"

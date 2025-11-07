@@ -1,13 +1,16 @@
-from flask import Flask
-from logging.config import dictConfig
+from functools import lru_cache
+import logging
+import logging.config
 from app.core.config import get_settings
 
 cfg = get_settings()
-dictConfig({
+logging_config = {
     'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
+    'formatters': {
+        'default': {
+            'format': '[%(levelname)s - %(asctime)s]: %(message)s',
+        }
+    },
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
@@ -17,11 +20,16 @@ dictConfig({
         'file': {
             'class': 'logging.FileHandler',
             'formatter': 'default',
-            'filename': 'app.log'
+            'filename': './app.log'
         }
     },
     'root': {
-        'level': cfg.LOG_LEVEL if hasattr(cfg, 'LOG_LEVEL') else 'INFO',
+        'level': 'DEBUG',
         'handlers': ['console', 'file']
     }
-})  
+}
+logging.config.dictConfig(logging_config)
+
+@lru_cache()
+def get_logger(name: str = None):
+    return logging.getLogger(name)

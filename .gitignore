@@ -1,0 +1,7 @@
+node_modules/@radix-ui/primitive/dist/index.d.mts
+node_modules/@radix-ui/primitive/package.json
+
+node_modules/.cache
+node_modules/
+*.pdf
+*.csv

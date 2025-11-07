@@ -30,8 +30,7 @@ class DisciplineRepository:
 	async def create(self, entity: Discipline) -> Discipline:
 		try:
 			self._session.add(entity)
-			await self._session.commit()
-			await self._session.refresh(entity)
+			await self._session.flush()
 			return entity
 		except Exception as e:
 			raise errors.DatabaseException(f"Failed to create discipline: {str(e)}")
@@ -42,7 +41,7 @@ class DisciplineRepository:
 			if not discipline:
 				raise errors.ResourceNotFoundException(self._discipline_not_found_msg)
 			await self._session.execute(delete(Discipline).where(Discipline.id == id))
-			await self._session.commit()
+			
 		except Exception as e:
 			raise errors.DatabaseException(f"Failed to delete discipline: {str(e)}")
 
@@ -51,8 +50,7 @@ class DisciplineRepository:
 			if not entity:
 				raise errors.ResourceNotFoundException(self._discipline_not_found_msg)
 			await self._session.merge(entity)
-			await self._session.commit()
-			await self._session.refresh(entity)
+			await self._session.flush()
 		except Exception as e:
 			raise errors.DatabaseException(f"Failed to update discipline: {str(e)}")
 		return entity

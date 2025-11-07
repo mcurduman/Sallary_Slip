@@ -1,9 +1,9 @@
 from enum import Enum
 
 class EmploymentStatus(str, Enum):
-    ACTIVE = "active"
-    TERMINATED = "terminated"
-    RETIRED = "retired"
-    RESIGNED = "resigned"
-    SUSPENDED = "suspended"
-    OTHER = "other"
+    ACTIVE = "ACTIVE"
+    TERMINATED = "TERMINATED"
+    RETIRED = "RETIRED"
+    RESIGNED = "RESIGNED"
+    SUSPENDED = "SUSPENDED"
+    OTHER = "OTHER"

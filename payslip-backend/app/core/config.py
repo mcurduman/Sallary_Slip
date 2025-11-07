@@ -5,7 +5,6 @@ from app.core.settings.database_settings import DatabaseSettings
 from app.core.settings.mail_settings import MailSettings
 from app.core.settings.jwt_settings import JWTSettings
 
-
 class Env(str, Enum):
     development = "development"
     production = "production"

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import String, ForeignKey, Date
+from sqlalchemy import String, ForeignKey, Date, Enum
 import uuid
 from datetime import date
 from app.db.base import Base
@@ -19,9 +19,8 @@ class Employee(Base):
     position_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("position.id"), nullable=False)
     manager_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("employee.id"))
     discipline_id: Mapped[Optional[uuid.UUID]] = mapped_column(ForeignKey("discipline.id"))
-    employment_status: Mapped[EmploymentStatus] = mapped_column(String, default=EmploymentStatus.ACTIVE)
+    employment_status: Mapped[EmploymentStatus] = mapped_column(Enum(EmploymentStatus), default=EmploymentStatus.ACTIVE)
     hire_date: Mapped[Optional[date]] = mapped_column(Date)
-    termination_status: Mapped[Optional[EmploymentStatus]] = mapped_column(String, default=None)
     termination_date: Mapped[Optional[date]] = mapped_column(Date)
 
     user = relationship("User", back_populates="employee",cascade="all, delete-orphan", uselist=False)
@@ -29,10 +28,18 @@ class Employee(Base):
     discipline = relationship("Discipline", back_populates="employees")
     manager = relationship("Employee", remote_side=[id], back_populates="direct_reports")
     direct_reports = relationship("Employee", back_populates="manager")
-    monthly_timecards = relationship("MonthlyTimecard", back_populates="employee")
-    approved_monthly_timecards = relationship("MonthlyTimecard", back_populates="approver", foreign_keys='MonthlyTimecard.approved_by')
+    monthly_timecards = relationship(
+        "MonthlyTimecard",
+        back_populates="employee",
+        foreign_keys="MonthlyTimecard.employee_id"
+    )
+    approved_monthly_timecards = relationship(
+        "MonthlyTimecard",
+        back_populates="approver",
+        foreign_keys="MonthlyTimecard.approved_by"
+    )
     payroll_records = relationship("PayrollRecord", back_populates="employee")
-    deductions = relationship("Deduction", back_populates="employee")
+    deductions = relationship("EmployeeDeduction", back_populates="employee")
     base_salary = relationship("EmployeeBaseSalary", back_populates="employee")
-    benefits = relationship("EmployeeBenefit", back_populates="employee")
+    emp_benefits = relationship("EmployeeBenefit", back_populates="employee")
 

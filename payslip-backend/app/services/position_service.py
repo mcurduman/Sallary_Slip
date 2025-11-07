@@ -1,8 +1,10 @@
 from app.repositories.position_repository import PositionRepository
 from app.db.models.position import Position
-from typing import Optional, Iterable
+from typing import Iterable
 import uuid
-from app.utils.errors import ResourceNotFoundException, DatabaseException, BaseAppException
+from app.utils.errors.DatabaseException import DatabaseException
+from app.utils.errors.ResourceNotFoundException import ResourceNotFoundException
+from app.utils.errors.BaseAppException import BaseAppException
 
 class PositionService:
     def __init__(self, position_repository: PositionRepository):
@@ -33,23 +35,3 @@ class PositionService:
             raise e
         except Exception as e:
             raise BaseAppException(f"Failed to retrieve positions: {str(e)}")
-
-    async def delete_position(self, position_id: uuid.UUID) -> None:
-        try:
-            await self.position_repository.delete(position_id)
-        except ResourceNotFoundException as e:
-            raise e
-        except DatabaseException as e:
-            raise e
-        except Exception as e:
-            raise BaseAppException(f"Failed to delete position: {str(e)}")
-        
-    async def update_position(self, position: Position) -> Position:
-        try:
-            return await self.position_repository.update(position)
-        except ResourceNotFoundException as e:
-            raise e
-        except DatabaseException as e:
-            raise e
-        except Exception as e:
-            raise BaseAppException(f"Failed to update position: {str(e)}")

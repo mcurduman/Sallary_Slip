@@ -22,7 +22,7 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 from app.db import base
 from app.db.models import discipline, employee, position, user, payroll_record
-from app.db.models import emp_base_salary, emp_benefit, emp_deduction, monthly_timecard
+from app.db.models import emp_base_salary, emp_benefit, emp_deduction, monthly_timecard, user_role
 target_metadata = base.Base.metadata
 
 # other values from the config, defined by the needs of env.py,

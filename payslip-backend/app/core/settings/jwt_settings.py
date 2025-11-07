@@ -7,3 +7,5 @@ class JWTSettings(BaseSettings):
     COOKIE_CSRF_PROTECT: bool = False
     COOKIE_SECURE: bool = False
     COOKIE_SAMESITE: str = "Lax"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30

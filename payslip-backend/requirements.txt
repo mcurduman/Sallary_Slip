@@ -19,3 +19,11 @@ mailtrap
 pypdf
 reportlab
 reportlab[pycairo]
+python-multipart
+python-jose[cryptography] 
+passlib[argon2]
+argon2-cffi
+aiofiles
+uvicorn
+pandas
+idemptx

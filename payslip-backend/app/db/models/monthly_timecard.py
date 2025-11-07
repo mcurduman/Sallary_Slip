@@ -20,5 +20,5 @@ class MonthlyTimecard(Base):
     overtime_hours: Mapped[Optional[int]] = mapped_column(Integer)
     status : Mapped[Optional[TimecardStatus]] = mapped_column(String, default=TimecardStatus.DRAFT)
 
-    employee = relationship("Employee", back_populates="monthly_timecards")
+    employee = relationship("Employee", back_populates="monthly_timecards", foreign_keys=[employee_id])
     approver = relationship("Employee", foreign_keys=[approved_by], back_populates="approved_monthly_timecards")

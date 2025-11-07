@@ -17,13 +17,13 @@ class EmployeeDeduction(Base):
     type: Mapped[DeductionType] = mapped_column(Enum(DeductionType), nullable=False)
     effective_start_date: Mapped[Optional[date]] = mapped_column(Date)
     effective_end_date: Mapped[Optional[date]] = mapped_column(Date)
-    periodicity: Mapped[Periodicity] = mapped_column(Enum(Periodicity), nullable=False, default=Periodicity.monthly)
+    periodicity: Mapped[Periodicity] = mapped_column(Enum(Periodicity), nullable=False, default=Periodicity.MONTHLY)
     percentage: Mapped[Optional[float]] = mapped_column(Numeric(12, 2))
     amount: Mapped[Optional[float]] = mapped_column(Numeric(12, 2))
     calculation_method: Mapped[CalculationMethod] = mapped_column(
         Enum(CalculationMethod),
         nullable=False,
-        default=CalculationMethod.fixed
+        default=CalculationMethod.FIXED
     )
 
     employee = relationship("Employee", back_populates="deductions")

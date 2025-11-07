@@ -2,7 +2,7 @@ services:
   frontend:
     build: ./payslip-frontend
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - ./payslip-frontend:/app
       - /app/node_modules
@@ -16,4 +16,42 @@ services:
       - ./payslip-backend:/app
     restart: always
     env_file:
-      - .env
+      - ./payslip-backend/.env
+
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payslip_db
+    ports:
+      - "5543:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+      #- ./payslip-backend/db_data_restore:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 1m30s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    restart: always
+
+  migration:
+    build: ./payslip-backend
+    command: alembic upgrade head
+    volumes:
+      - ./payslip-backend:/app
+    env_file:
+      - ./payslip-backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pg_data:
